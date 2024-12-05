@@ -2,6 +2,8 @@
 CVersion="1.552"
 
 --[[
+@url http://winter.sgv417.jp/alchemy/download/official/AI_manual_en.html
+
 function	TraceAI (string) end
 function	MoveToOwner (id) end
 function 	Move (id,x,y) end
