@@ -3364,8 +3364,37 @@ function AI(myid)
 							seralegionActive=seralegionActive+1
 						end
 					end
-				end
-				if (v > MagicNumber2) then
+				end --815-5482
+				-- By default, always check if the object is a monster.
+				if IsMonster(v)==1 then
+					TraceAI(" - ID: " .. v.." of type "..GetV(V_HOMUNTYPE,v).." is a monster")
+					if LiveMobID == 1 and IsHomun(MyID)==1 then
+						tMobID=tMobID.."MobID["..v.."]="..GetV(V_HOMUNTYPE,v).."\n"
+					end
+					Monsters[v]=1
+					if (v < MagicNumber) then
+						Summons[v]=1
+					end
+					if (AutoDetectPlant==1 and IsActive[v]~=1 and IsHomun(myid)~=1) then
+						if (GetV(V_MOTION,v)==MOTION_STAND or GetV(V_MOTION,v)==MOTION_DAMAGE or GetV(V_MOTION,v)==MOTION_DEAD) then
+							IsActive[v]=0
+						else
+							IsActive[v]=1
+						end
+					end
+					if (GetTact(TACT_BASIC,v)==TACT_TANK and GetV(V_TARGET,v)==MyID) then
+						TankMonsterCount=TankMonsterCount+1
+					end
+					motionclass=MotionClassLU[GetV(V_MOTION,v)]
+					if motionclass==nil then 
+						motionclass=3 
+					end --CHANGE
+					--TraceAI(v.." of type "..GetV(V_HOMUNTYPE,v).." "..motionclass)
+					if (motionclass~=-1 and (IsActive[v]==1 or AutoDetectPlant~=1 or IsHomun(myid)==1)) then 
+						--TraceAI(v.." of type "..GetV(V_HOMUNTYPE,v).." target added")
+						Targets[v]={motionclass,GetTargetClass(GetV(V_TARGET,v))}
+					end
+				elseif (v > MagicNumber2) then
 					Players[v]=1
 					if MyFriends[v]==FRIEND and GetV(V_OWNER,MyID)~=v then --Newly appeared on screen
 						if OldPlayers[v]~=1 or AggressiveAutofriend then
@@ -3392,34 +3421,6 @@ function AI(myid)
 								newfriendmidfile:close()
 							end
 						end	
-					end
-				elseif IsMonster(v)==1 then
-					--TraceAI(v.." of type "..GetV(V_HOMUNTYPE,v).." is a monster")
-					if LiveMobID == 1 and IsHomun(MyID)==1 then
-						tMobID=tMobID.."MobID["..v.."]="..GetV(V_HOMUNTYPE,v).."\n"
-					end
-					Monsters[v]=1
-					if (v < MagicNumber) then
-						Summons[v]=1
-					end
-					if (AutoDetectPlant==1 and IsActive[v]~=1 and IsHomun(myid)~=1) then
-						if (GetV(V_MOTION,v)==MOTION_STAND or GetV(V_MOTION,v)==MOTION_DAMAGE or GetV(V_MOTION,v)==MOTION_DEAD) then
-							IsActive[v]=0
-						else
-							IsActive[v]=1
-						end
-					end
-					if (GetTact(TACT_BASIC,v)==TACT_TANK and GetV(V_TARGET,v)==MyID) then
-						TankMonsterCount=TankMonsterCount+1
-					end
-					motionclass=MotionClassLU[GetV(V_MOTION,v)]
-					if motionclass==nil then 
-						motionclass=3 
-					end --CHANGE
-					--TraceAI(v.." of type "..GetV(V_HOMUNTYPE,v).." "..motionclass)
-					if (motionclass~=-1 and (IsActive[v]==1 or AutoDetectPlant~=1 or IsHomun(myid)==1)) then 
-						--TraceAI(v.." of type "..GetV(V_HOMUNTYPE,v).." target added")
-						Targets[v]={motionclass,GetTargetClass(GetV(V_TARGET,v))}
 					end
 				elseif (v < MagicNumber) then		
 					Retainers[v]=1
@@ -3465,6 +3466,8 @@ function AI(myid)
 		end
 		--logappend("AAI_Legion","Sera Legion - "..SeraLegionCount.." bugs out "..SeraLegionActive.." active and "..SeraLegionBugged.." bugged. "..SeraLegionList)
 	end
+	-- [BUG] By default, for the Humunculus to attack *anything*, we need to set PVPmode to TRUE. If set to FALSE, it will ignore everything.
+	-- note: "v" by default is always "1"
 	if PVPmode==1 then
 		for k,v in pairs(Players) do
 			--logappend("AAI_PVP",k.." ("..GetV(V_HOMUNTYPE,k)..") Motion: "..FormatMotion(GetV(V_MOTION,k)).."Is monster? "..IsMonster(k))

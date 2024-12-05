@@ -260,7 +260,17 @@ function IsRescueTarget(id)
 end
 
 function GetTargetClass(id)
--- 0 = no target, 1 = self 2= friend, -1 = other monster -2 = other player
+--  0 = no target
+--  1 = self
+--  2 = friend
+-- -1 = other monster
+-- -2 = other player
+
+	-- No matter what, if the Id corresponds to a monster, stop here.
+	if ( 1 == IsMonster( id ) ) then
+		return -1
+	end
+
 	if id == MyID then
 		return 1
 	elseif id == 0 then
@@ -318,8 +328,13 @@ function IsFriendOrSelf(id)
 	return 0
 end
 
-function IsPlayer(id)
-	if (id>MagicNumber2) then
+-- Depend a lot more on IsMonster as MagicNumber2 seems unreliable
+function IsPlayer( id )
+	if ( 1 == IsMonster( id ) ) then
+		return 0
+	end
+
+	if ( id > MagicNumber2 ) then
 		return 1
 	else
 		return 0
