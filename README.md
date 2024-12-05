@@ -19,6 +19,24 @@ Contains everything above, plus some personal adjustments to auto-cast some skil
  - Copy the *USER_AI*-folder from the ZIP-file into the *AI*-folder of your Ragnarok-folder (will overwrite the currently installed user-AI, make backups!)
  - To instantly see changes ingame, *Rest* -> *Call* your Homunculus or use `@refresh` if you have access to server commands
 
+## Debugging ##
+You can debug the Homunculus AI and what information it is seeing with the command "/traceai", this will write all the log calls to a file named "TraceAI.txt" inside your main Ragnarok Online install folder. Other text files with log information may also be generated.
+
+Be warned that activating this log saving feature may cause the client to lag heavily, make it unresposive and even make it crash. Only use it when you know exactly what you are doing.
+
+## Updating the AI ##
+After you have downloaded the code contained in this repository, you can copy this files into your ./AI/USER_AI folder. Make a backup of your old folder if you want to preserve your old settings.
+
+If you are updating from another AzzyAI version and want to preserve your current settings, it is adviced you backup and then restore the next files:
+ - H_Config.lua
+ - H_Extra.lua
+ - H_PVP_Tact.lua
+ - H_Tactics.lua
+ - M_Config.lua
+ - M_Extra.lua
+ - M_PVP_Tact.lua
+ - M_Tactics.lua
+
 ## Changes ##
 Skills are updated to their new max-level to reflect [official kRO changes](http://ro.gnjoy.com/news/notice/View.asp?BBSMode=10001&seq=6843&curpage=1)
 

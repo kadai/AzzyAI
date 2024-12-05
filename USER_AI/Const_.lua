@@ -1,5 +1,5 @@
 -- AzzyAI Constant File
-CVersion="1.552"
+CVersion="1.56.1"
 
 --[[
 @url http://winter.sgv417.jp/alchemy/download/official/AI_manual_en.html

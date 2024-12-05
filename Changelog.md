@@ -1,3 +1,8 @@
+1.56.1:
+* Corrected an error where Homunculus did not attacked any mob if PVPmode was set to False
+* Homunculus now follows the directives set in the "Homunculus Tactics" tab
+* Changed functions GetTargetClass and IsPlayer to check first aganist IsMonster
+
 1.56:
 * Add support for taking over /AI
 * Fix issue with pauses bugging up predictive move. 
