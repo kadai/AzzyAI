@@ -1,10 +1,10 @@
 -------------------------------
--- This file is part of AzzyAI 1.55
+-- This file is part of AzzyAI 1.56.1
 -- If you want to use these functions in your own AI
 -- it is reccomended that you use the seperately available
 -- version, which does not utilize AAI-specific systems. 
 -- Written by Dr. Azzy of iRO Chaos
-AUVersion="1.56"
+AUVersion="1.56.1"
 -------------------------------
 
 
@@ -259,34 +259,68 @@ function IsRescueTarget(id)
 	return 0
 end
 
-function GetTargetClass(id)
+function GetTargetClass( id )
 --  0 = no target
 --  1 = self
 --  2 = friend
 -- -1 = other monster
 -- -2 = other player
 
-	-- No matter what, if the Id corresponds to a monster, stop here.
+	-- Always check first if the current object is a monster
 	if ( 1 == IsMonster( id ) ) then
 		return -1
 	end
 
-	if id == MyID then
+	if ( id == MyID ) then
 		return 1
-	elseif id == 0 then
-		return 0
-	elseif (id > MagicNumber2) then
-		if IsFriendOrSelf(id)==1 then
+	end
+
+	-- Object probably is a player
+	-- TODO: Detect NPCs, as they are detected as "players"
+	if ( id > MagicNumber2 ) then
+		if ( 1 == IsFriendOrSelf( id ) ) then
 			return 2
 		else
 			return -2
 		end
-	elseif IsMonster(id)==1 then
-		return -1
-	else
-		return 0
 	end
+
+	-- Replacement for:
+	-- 	if( id == 0 ) then
+	return 0
 end
+
+function GetClassName( id )
+	result = GetTargetClass( id )
+
+	if ( -2 == result ) then
+		return 'is_player'
+	end
+
+	if ( -1 == result ) then
+		return 'is_monster'
+	end
+
+	if ( 1 == result ) then
+		return 'is_homunculus'
+	end
+
+	if ( 2 == result ) then
+		return 'is_friend'
+	end
+
+	return 'no_target'
+end
+
+--###################################
+--### Future semantic function(s) ###
+--###################################
+
+
+function GetObjectType( id )
+	return GetV( V_HOMUNTYPE, id )
+end
+
 
 --########################
 --### Friend Functions ###
@@ -336,9 +370,9 @@ function IsPlayer( id )
 
 	if ( id > MagicNumber2 ) then
 		return 1
-	else
-		return 0
 	end
+		
+	return 0
 end
 
 function UpdateFriends() 

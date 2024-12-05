@@ -4,7 +4,7 @@
 -- This AI is intended for use on official servers only
 -- Permission granted to distribute in unmodified form.
 -- You may expand the AI freely through the M_Extra and H_Extra files
-MainVersion="1.56"
+MainVersion="1.56.1"
 
 ResCmdList			= List.new()
 -- As of dev 15, global variables are now in Const_.lua
@@ -3335,7 +3335,11 @@ function AI(myid)
 	SeraLegionList=""
 	local seralegionActive=0
 	local seralegionBugged=0
+
 	for i,v in ipairs(actors) do
+		-- Note: GetActors() only returns a list (array, or table in LUA) with IDs of the interactable objects in screen...
+		-- So we need to try and "guess" what each ID actually represents, either it be a player, monster, NPC, etc.
+		--TraceAI(" - Actor > index: " ..i.. " value:" .. v )
 		local x,y = GetV(V_POSITION,v)
 		TakenCells[x.."_"..y]=1
 		if AAIActors[v]~=1 then
@@ -3364,10 +3368,10 @@ function AI(myid)
 							seralegionActive=seralegionActive+1
 						end
 					end
-				end --815-5482
-				-- By default, always check if the object is a monster.
+				end
+				-- By default, always check first if the object is a monster.
 				if IsMonster(v)==1 then
-					TraceAI(" - ID: " .. v.." of type "..GetV(V_HOMUNTYPE,v).." is a monster")
+					TraceAI(" - ID: " ..v.. " of type "..GetV(V_HOMUNTYPE,v).." and with class " .. GetClassName( v ) )
 					if LiveMobID == 1 and IsHomun(MyID)==1 then
 						tMobID=tMobID.."MobID["..v.."]="..GetV(V_HOMUNTYPE,v).."\n"
 					end
@@ -3466,15 +3470,14 @@ function AI(myid)
 		end
 		--logappend("AAI_Legion","Sera Legion - "..SeraLegionCount.." bugs out "..SeraLegionActive.." active and "..SeraLegionBugged.." bugged. "..SeraLegionList)
 	end
-	-- [BUG] By default, for the Humunculus to attack *anything*, we need to set PVPmode to TRUE. If set to FALSE, it will ignore everything.
-	-- note: "v" by default is always "1"
+	-- Note: "v" by default is always "1"
 	if PVPmode==1 then
 		for k,v in pairs(Players) do
 			--logappend("AAI_PVP",k.." ("..GetV(V_HOMUNTYPE,k)..") Motion: "..FormatMotion(GetV(V_MOTION,k)).."Is monster? "..IsMonster(k))
 			if IsHomun(MyID)==1 then
-				TraceAI("PVP: Player "..k.." ("..GetV(V_HOMUNTYPE,k)..") Motion: "..FormatMotion(GetV(V_MOTION,k)).."Is monster? "..IsMonster(k))
+				TraceAI(" - PVP: Player "..k.." (ID: "..GetV(V_HOMUNTYPE,k)..") Motion: "..FormatMotion(GetV(V_MOTION,k)).." Type: " ..GetClassName( k ) )
 			else
-				TraceAI("PVP: Player "..k.."  Motion: "..FormatMotion(GetV(V_MOTION,k)).."Is monster? "..IsMonster(k))
+				TraceAI(" - PVP: Player "..k.."  Motion: "..FormatMotion(GetV(V_MOTION,k)).." Type: " ..GetClassName( k ) )
 			end
 			if IsMonster(k)==1 then
 				Targets[k] = {MotionClassLU[GetV(V_MOTION,k)],GetTargetClass(GetV(V_TARGET,k))}
